@@ -30,6 +30,5 @@ class Tag(models.Model):
     recurs = models.ForeignKey(Recurs, on_delete=models.CASCADE)
     nom = models.CharField(max_length=50)
 
-
     def __str__(self):
         return self.nom
