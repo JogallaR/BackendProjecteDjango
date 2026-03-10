@@ -1,3 +1,11 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+from .models import Recurs, Tag
+from .serializers import RecursSerializer, TagSerializer
 
-# Create your views here.
+class RecursViewSet(viewsets.ModelViewSet):
+    queryset = Recurs.objects.all()
+    serializer_class = RecursSerializer
+
+class TagViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
