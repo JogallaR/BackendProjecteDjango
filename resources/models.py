@@ -11,22 +11,35 @@ class Recurs(models.Model):
         VIDEO = 'VI', 'Vídeo'
         CURS = 'CU', 'Curs'
 
-    titol = models.CharField(max_length=200)
+    titol = models.CharField(max_length=200, unique=True)
     descripcio = models.TextField(blank=True)
+
     categoria = models.CharField(
         max_length=2,
         choices=Categoria.choices,
         default=Categoria.LLIBRE
     )
+
     data_publicacio = models.DateField(null=True, blank=True)
+
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.titol
 
+
 class Tag(models.Model):
-    recurs = models.ForeignKey(Recurs, on_delete=models.CASCADE, related_name='tags')
+
+    recurs = models.ForeignKey(
+        Recurs,
+        on_delete=models.CASCADE,
+        related_name='tags'
+    )
+
     nom = models.CharField(max_length=50)
+
+    class Meta:
+        unique_together = ['recurs', 'nom']
 
     def __str__(self):
         return self.nom
