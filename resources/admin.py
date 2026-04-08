@@ -1,21 +1,20 @@
 from django.contrib import admin
-from .models import Recurs, Tag
+from .models import Recurs, Tag, Autor
 
-# Inline de Tag dins Recurs
+
 class TagInline(admin.TabularInline):
     model = Tag
-    extra = 1  # una línia extra buida per defecte
+    extra = 1
 
-# Admin de Recurs personalitzat
+
 class RecursAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {"fields": ["titol", "descripcio"]}),
-        ("Més informació", {"fields": ["categoria", "data_publicacio", "is_active"], "classes": ["collapse"]}),
+        (None, {"fields": ["titol", "descripcio", "autor"]}),
+        ("Extra", {"fields": ["categoria", "data_publicacio", "is_active"]}),
     ]
     inlines = [TagInline]
-    list_display = ('titol', 'categoria', 'is_active', 'data_publicacio')
-    list_filter = ('categoria', 'is_active')
-    search_fields = ['titol', 'descripcio']
 
-# Registrar al admin
+
 admin.site.register(Recurs, RecursAdmin)
+admin.site.register(Autor)
+admin.site.register(Tag)

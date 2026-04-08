@@ -1,5 +1,16 @@
 from django.db import models
 
+
+class Autor(models.Model):
+    nom = models.CharField(max_length=100)
+    cognoms = models.CharField(max_length=150, blank=True)
+    nacionalitat = models.CharField(max_length=100, blank=True)
+    bio = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.nom} {self.cognoms}".strip()
+
+
 class Recurs(models.Model):
 
     class Meta:
@@ -20,9 +31,18 @@ class Recurs(models.Model):
         default=Categoria.LLIBRE
     )
 
-    data_publicacio = models.DateField(null=True, blank=True)
+    data_publicacio = models.DateField()
 
     is_active = models.BooleanField(default=True)
+
+    # 🔥 RELACIÓ (1 autor per recurs)
+    autor = models.ForeignKey(
+        Autor,
+        on_delete=models.CASCADE,
+        related_name='recursos',
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.titol

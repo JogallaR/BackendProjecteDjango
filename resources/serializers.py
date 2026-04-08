@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from datetime import date
-from .models import Recurs, Tag
+from .models import Recurs, Tag, Autor
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -9,36 +8,43 @@ class TagSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class RecursSerializer(serializers.ModelSerializer):
+class AutorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Autor
+        fields = "__all__"
+        
+        def validate(self, data):
+            if not data.get("nom"):
+                raise serializers.ValidationError({
+            "nom": "El nom no pot estar buit"
+        })
+            return data
 
+
+class RecursSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
+    autor = serializers.StringRelatedField()
+
+    # 🔥 PER ESCRIURE (assignar autor des del frontend)
+    autor = serializers.PrimaryKeyRelatedField(
+        queryset=Autor.objects.all(),
+        required=False,
+        allow_null=True
+    )
+
+    # 🔥 PER MOSTRAR NOM
+    autor_nom = serializers.StringRelatedField(
+        source='autor',
+        read_only=True
+    )
 
     class Meta:
         model = Recurs
-        fields = [
-            "id",
-            "titol",
-            "descripcio",
-            "categoria",
-            "data_publicacio",
-            "is_active",
-            "tags",
-        ]
-
-    def validate_titol(self, value):
-
-        if len(value) < 3:
-            raise serializers.ValidationError(
-                "El títol ha de tenir almenys 3 caràcters"
-            )
-
-        return value
-
-    def validate_data_publicacio(self, value):
-
-        if value and value > date.today():
-            raise serializers.ValidationError(
-                "La data no pot ser futura"
-            )
-
-        return value
+        fields = "__all__"
+        
+        def validate(self, data):
+            if not data.get("titol"):
+                raise serializers.ValidationError({
+                "titol": "El títol no pot estar buit"
+            })
+            return data
